@@ -69,7 +69,7 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: nginx_public_tenders
+    container_name: nginx_pdfquizzer
     restart: always
     ports:
       - 80:80
