@@ -1,0 +1,1 @@
+quizz_example = '''{"elements": [{"type": "radiogroup","name": "bandos","title": "¿Qué bandos se enfrentaron en la Guerra Civil Española?","choicesOrder": "random","choices": ["Rebeldes y monárquicos","Republicanos y nacionales","Comunistas y capitalistas","Conservadores y liberales"],"correctAnswer": "Republicanos y nacionales"}]},'''
