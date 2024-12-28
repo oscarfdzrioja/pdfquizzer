@@ -1,0 +1,85 @@
+services:
+  db:
+    image: postgres:12
+    restart: always
+    volumes:
+      - app-db-pdfquizzer-data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+
+  backend:
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - .env
+    expose:
+      - "8080"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS}
+      - OPENAI_API_KEY = ${OPENAI_API_KEY}
+      - SWAGGER_UI_USERNAME=${SWAGGER_UI_USERNAME}
+      - SWAGGER_UI_PASSWORD=${SWAGGER_UI_PASSWORD}
+    build:
+      context: ./backend
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+    platform: linux/amd64 
+    volumes:
+      - ./backend/app:/app/app
+    command: 
+      uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+  
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - ADMINER_DESIGN=pepa-linha-dark
+      - ADMINER_DEFAULT_SERVER=db
+    command: 
+      php -S 0.0.0.0:8082 -t /var/www/html
+    expose:
+      - "8082"
+
+  nginx:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: nginx_public_tenders
+    restart: always
+    ports:
+      - 80:80
+    volumes:       
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+      - adminer
+
+volumes:
+  app-db-pdfquizzer-data:
+
+
