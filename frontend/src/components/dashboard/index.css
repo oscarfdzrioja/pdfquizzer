@@ -1,0 +1,22 @@
+.sd-title {
+    color: #1A202C !important;
+}
+.sd-navigation__start-btn  {    
+    color:  #1A202C !important;
+}
+.sd-navigation__next-btn {    
+    color:  #1A202C !important;
+}
+
+/* custom-survey-theme.css */
+.sv_main .sv_q_title {
+    color: #4A90E2 !important;  /* Cambia el color del título de las preguntas */
+  }
+  
+  .sv_main .sv_q_other input {
+    border-color: #4A90E2 !important; /* Cambia el color del borde de los inputs */
+  }
+  
+  .sv_main .sv_q_checkbox_control_label {
+    color: #4A90E2 !important; /* Cambia el color de las etiquetas de los checkboxes */
+  }
